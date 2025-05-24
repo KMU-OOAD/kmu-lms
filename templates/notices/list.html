@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}공지사항{% endblock %}
+{% block content %}
+<h2>📢 공지사항</h2>
+<table class="table table-striped">
+  <thead><tr><th>제목</th><th>작성일</th></tr></thead>
+  <tbody>
+    {% for notice in notices %}
+      <tr>
+        <td><a href="{% url 'notice_detail' notice.pk %}">{{ notice.title }}</a></td>
+        <td>{{ notice.posted_date|date:"Y-m-d H:i" }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="2">공지사항이 없습니다.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if user.is_admin %}
+  <a href="{% url 'notice_create' %}" class="btn btn-primary">공지 작성</a>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}홈 | KMU 도서관 시스템{% endblock %}
+{% block content %}
+<h2>🏫 도서관 안내</h2>
+
+<div class="row">
+  <!-- 공지사항 섹션 -->
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">📢 최신 공지사항</div>
+      <ul class="list-group list-group-flush">
+        {% for notice in notices %}
+          <li class="list-group-item">
+            <strong>{{ notice.title }}</strong><br>
+            <small class="text-muted">{{ notice.posted_date|date:"Y-m-d H:i" }}</small>
+          </li>
+        {% empty %}
+          <li class="list-group-item">공지사항이 없습니다.</li>
+        {% endfor %}
+      </ul>
+      <div class="card-footer text-end">
+        <a href="{% url 'notice_list' %}" class="btn btn-sm btn-outline-primary">전체 보기</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 운영시간 섹션 -->
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white">🕐 오늘의 운영시간</div>
+      <div class="card-body">
+        {% if today_info %}
+          <p><strong>{{ today_info.get_day_display }}</strong></p>
+          <p>개관: {{ today_info.open_time|time:"H:i" }}<br>
+             폐관: {{ today_info.close_time|time:"H:i" }}</p>
+        {% else %}
+          <p>운영시간 정보가 없습니다.</p>
+        {% endif %}
+      </div>
+      <div class="card-footer text-end">
+        <a href="{% url 'library_info_list' %}" class="btn btn-sm btn-outline-success">전체 보기</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

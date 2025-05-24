@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}공지사항 상세{% endblock %}
+{% block content %}
+<h2>{{ notice.title }}</h2>
+<p class="text-muted">{{ notice.posted_date|date:"Y-m-d H:i" }}</p>
+<p>{{ notice.content|linebreaks }}</p>
+
+{% if user.is_admin %}
+  <a href="{% url 'notice_edit' notice.pk %}" class="btn btn-warning">수정</a>
+  <form method="post" action="{% url 'notice_delete' notice.pk %}" class="d-inline">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">삭제</button>
+  </form>
+{% endif %}
+<a href="{% url 'notice_list' %}" class="btn btn-secondary mt-3">목록</a>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}도서관 운영시간{% endblock %}
+{% block content %}
+<h2>📅 도서관 운영시간</h2>
+<table class="table table-hover">
+  <thead><tr><th>요일</th><th>개관</th><th>폐관</th>{% if user.is_admin %}<th>관리</th>{% endif %}</tr></thead>
+  <tbody>
+    {% for info in infos %}
+      <tr>
+        <td>{{ info.get_day_display }}</td>
+        <td>{{ info.open_time|time:"H:i" }}</td>
+        <td>{{ info.close_time|time:"H:i" }}</td>
+        {% if user.is_authenticated and user.is_admin %}
+          <td><a href="{% url 'library_info_edit' info.day %}" class="btn btn-sm btn-outline-primary">수정</a></td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

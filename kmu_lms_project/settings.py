@@ -27,10 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'myadmin.User'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'myadmin',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

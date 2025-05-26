@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>대출 이력</h2>
+    
+    {% if loans %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>도서명</th>
+                    <th>대출일</th>
+                    <th>반납예정일</th>
+                    <th>반납일</th>
+                    <th>상태</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in loans %}
+                <tr>
+                    <td>{{ loan.book.title }}</td>
+                    <td>{{ loan.start_date }}</td>
+                    <td>{{ loan.due_date }}</td>
+                    <td>{{ loan.return_date|default:"-" }}</td>
+                    <td>
+                        {% if loan.return_date %}
+                            <span class="badge bg-success">반납완료</span>
+                        {% elif loan.is_overdue %}
+                            <span class="badge bg-danger">연체</span>
+                        {% else %}
+                            <span class="badge bg-warning">대출중</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not loan.return_date %}
+                            <a href="{% url 'return_book' loan.id %}" class="btn btn-sm btn-primary">반납하기</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        대출 이력이 없습니다.
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

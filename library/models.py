@@ -10,15 +10,12 @@ class Book(models.Model):
 
 class Loan(models.Model):
     loanID = models.AutoField(primary_key=True)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE, db_column='userID')
+    userID = models.ForeignKey(User, on_delete=models.CASCADE, db_column='userID', related_name='loans')
     bookID = models.ForeignKey(Book, null=True, on_delete=models.CASCADE, db_column='bookID')
     start_date = models.DateField(auto_now_add=True)
     due_date = models.DateField()
     return_date = models.DateField(null=True, blank=True)
     is_overdue = models.BooleanField(default=False)
-    @property
-    def is_overdue(self):
-        return self.return_date is None and self.due_date < date.today()
 
 class Reservation(models.Model):
     reservationID = models.AutoField(primary_key=True)

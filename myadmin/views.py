@@ -86,7 +86,7 @@ def extend_loan(request, loan_id):
 @login_required
 @user_passes_test(is_admin)
 def manage_overdue(request):
-    overdue_users = User.objects.filter(loan__is_overdue=True).distinct()
+    overdue_users = User.objects.filter(loans__is_overdue=True).distinct()
     return render(request, 'myadmin/manage_overdue.html', {'users': overdue_users})
 
 @login_required

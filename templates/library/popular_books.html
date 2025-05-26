@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}인기 도서{% endblock %}
+{% block content %}
+<h2>📚 인기 도서 순위</h2>
+<table class="table table-hover">
+  <thead>
+    <tr><th>순위</th><th>제목</th><th>저자</th><th>대출 횟수</th></tr>
+  </thead>
+  <tbody>
+    {% for book in books %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ book.title }}</td>
+        <td>{{ book.author }}</td>
+        <td>{{ book.loan_count }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">대출된 도서가 없습니다.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -62,6 +62,7 @@ def borrow_book(request, book_id):
     if book.available:
         Loan.objects.create(userID=user, bookID=book, due_date=date.today() + timedelta(days=14))
         book.available = False
+        book.loan_count += 1
         book.save()
         # messages.success(request, f"'{book.title}' 도서가 대출되었습니다.")
         # 예약이 있었다면 해당 예약 상태 변경 (예: 'Fulfilled')
@@ -134,3 +135,7 @@ def my_reservations(request):
     return render(request, 'library/my_reservations.html', {
         'reservations': reservations
     })
+
+def popular_books(request):
+    books = Book.objects.order_by('-loan_count')[:10]  # 인기 Top 10
+    return render(request, 'library/popular_books.html', {'books': books})

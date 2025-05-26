@@ -59,4 +59,23 @@
     </div>
   </div>
 </div>
+
+<!-- 인기 도서 미리보기 -->
+<div class="card mb-4">
+  <div class="card-header bg-warning text-dark">🔥 인기 도서 Top 3</div>
+  <ul class="list-group list-group-flush">
+    {% for book in popular_books %}
+      <li class="list-group-item">
+        <strong>{{ book.title }}</strong> - {{ book.author }}<br>
+        <small class="text-muted">대출 {{ book.loan_count }}회</small>
+      </li>
+    {% empty %}
+      <li class="list-group-item">대출된 도서가 없습니다.</li>
+    {% endfor %}
+  </ul>
+  <div class="card-footer text-end">
+    <a href="{% url 'library:popular_books' %}" class="btn btn-sm btn-outline-warning">전체 보기</a>
+  </div>
+</div>
+
 {% endblock %}

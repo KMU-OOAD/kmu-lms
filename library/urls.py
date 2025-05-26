@@ -11,4 +11,5 @@ urlpatterns = [
     path('return/<int:loan_id>/', views.return_book, name='return_book'),
     path('history/', views.loan_history, name='loan_history'),
     path('my-reservations/', views.my_reservations, name='my_reservations'),
+    path('popular/', views.popular_books, name='popular_books'),
 ]

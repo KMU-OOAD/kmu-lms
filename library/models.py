@@ -8,6 +8,7 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     available = models.BooleanField(default=True)
     penalty_until = models.DateField(null=True, blank=True)
+    loan_count = models.PositiveIntegerField(default=0)
 
 class Loan(models.Model):
     loanID = models.AutoField(primary_key=True)

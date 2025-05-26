@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-class User(AbstractUser):
-    student_id = models.IntegerField(unique=True)
+from django.contrib.auth.models import User
+from datetime import date
 
 class Book(models.Model):
     title = models.CharField(max_length=200)

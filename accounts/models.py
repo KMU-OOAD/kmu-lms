@@ -28,6 +28,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    penalty_until = models.DateField(null=True, blank=True)
     STATUS_CHOICES = [
         ('allowed', '대여 가능'),
         ('banned', '대여 금지'),

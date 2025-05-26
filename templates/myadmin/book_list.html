@@ -4,8 +4,13 @@
   {% for book in books %}
     <li>
       {{ book.title }} - {{ book.author }}
-      <a href="{% url 'myadmin:edit_book' book.bookID %}">수정</a>
-      <a href="{% url 'myadmin:delete_book' book.bookID %}">삭제</a>
+      <form action="{% url 'myadmin:edit_book' book.bookID %}" method="get" style="display:inline;">
+        <button type="submit">수정</button>
+      </form>
+      <form action="{% url 'myadmin:delete_book' book.bookID %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">삭제</button>
+      </form>
     </li>
   {% endfor %}
 </ul>

@@ -2,14 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .services.admin_services import AdminService
 from .form import BookForm
-from .models import Book, Loan, User
+# from .models import Book, Loan, User
+from accounts.models import User
+from library.models import Book, Loan
 
 # Create your views here.
 admin_service = AdminService()
 
-# 관리자 확인
+# 관리자만 접근 가능하게
 def is_admin(user):
-    return user.is_staff
+    return user.is_authenticated and user.is_admin
 
 # 관리자 대쉬보드
 @login_required

@@ -1,4 +1,5 @@
-from ..models import Book, Loan, User
+from library.models import Book, Loan
+from accounts.models import User
 from datetime import timedelta, date
 
 class AdminService:

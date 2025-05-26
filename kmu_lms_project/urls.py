@@ -24,7 +24,7 @@ urlpatterns = [
     path("", home_view, name = 'home'),
     path('accounts/', include('accounts.urls')),
     path('notices/', include('notices.urls')),
-    path('library/', include('library_info.urls')),
+    path('library_info/', include('library_info.urls')),
     path('myadmin/', include('myadmin.urls')),
-    path("", include("library.urls")),
+    path("library/", include("library.urls")),
 ]

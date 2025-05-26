@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser): # GRASP - Information Expert, Low Coupling
     student_id = models.CharField(max_length=20, unique=True)
     username = models.CharField(max_length=50)
     phone = models.CharField(max_length=20)

@@ -25,7 +25,7 @@ class BookListView(ListView):
     context_object_name = 'books'
 
 @method_decorator(admin_required, name='dispatch')
-class BookCreateView(View):
+class BookCreateView(View): # GRASP - Controller, Don’t Talk to Strangers, Low Coupling
     def get(self, request):
         form = BookForm()
         return render(request, 'myadmin/new_book.html', {'form': form})
@@ -41,7 +41,7 @@ class BookCreateView(View):
         return render(request, 'myadmin/new_book.html', {'form': form})
 
 @method_decorator(admin_required, name='dispatch')
-class BookUpdateView(View):
+class BookUpdateView(View): # GRASP - Controller, Don’t Talk to Strangers, Low Coupling
     def get(self, request, book_id):
         book = get_object_or_404(Book, pk=book_id)
         form = BookForm(instance=book)
@@ -60,7 +60,7 @@ class BookUpdateView(View):
         return render(request, 'myadmin/edit_book.html', {'form': form, 'book': book})
 
 @method_decorator(admin_required, name='dispatch')
-class BookDeleteView(View):
+class BookDeleteView(View): # GRASP - Controller, Don’t Talk to Strangers, Low Coupling
     def post(self, request, book_id):
         try:
             admin_service.delete_book(book_id)
@@ -77,7 +77,7 @@ class LoanListView(ListView):
     context_object_name = 'loans'
 
 @method_decorator(admin_required, name='dispatch')
-class ExtendLoanView(View):
+class ExtendLoanView(View): # GRASP - Controller, Don’t Talk to Strangers, Low Coupling
     def post(self, request, loan_id):
         admin_service.manage_loan(loan_id)
         return redirect('myadmin:admin_dashboard')

@@ -3,6 +3,22 @@
 {% block content %}
 <h2>🏫 도서관 안내</h2>
 
+<!-- 도서 서비스 섹션 추가 -->
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header bg-info text-white">📚 도서 서비스</div>
+      <div class="card-body">
+        <a href="{% url 'library:search_books' %}" class="btn btn-primary me-2">도서 검색하기</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'library:loan_history' %}" class="btn btn-secondary me-2">나의 대출 이력</a>
+          <a href="{% url 'library:my_reservations' %}" class="btn btn-info">나의 예약 목록</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row">
   <!-- 공지사항 섹션 -->
   <div class="col-md-6">

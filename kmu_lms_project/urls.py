@@ -26,5 +26,5 @@ urlpatterns = [
     path('notices/', include('notices.urls')),
     path('library_info/', include('library_info.urls')),
     path('myadmin/', include('myadmin.urls')),
-    path("library/", include("library.urls")),
+    path("library/", include("library.urls", namespace="library")),
 ]

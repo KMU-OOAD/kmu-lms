@@ -3,10 +3,8 @@
 {% block title %}나의 대출 이력{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>나의 대출 이력</h2>
-    
-    {% if loans %}
+  <h2>나의 대출 이력</h2>
+  {% if loans %}
     <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead class="table-dark">
@@ -52,5 +50,4 @@
         대출 이력이 없습니다.
     </div>
     {% endif %}
-</div>
 {% endblock %} 

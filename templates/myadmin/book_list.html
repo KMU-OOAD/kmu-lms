@@ -15,4 +15,8 @@
   {% endfor %}
 </ul>
 
+{% if error %}
+  <p style="color: red;">{{ error }}</p>
+{% endif %}
+
 <a href="{% url 'myadmin:admin_dashboard' %}">← 관리자 대쉬보드로</a>

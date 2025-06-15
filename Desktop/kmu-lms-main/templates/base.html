@@ -112,7 +112,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="{% url 'home' %}">
         <i class="fas fa-university"></i>
         KMU Library System
     </a>
@@ -122,18 +122,28 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-            <a class="nav-link" href="/library/search/">
+            <a class="nav-link" href="{% url 'library:search_books' %}">
                 <i class="fas fa-search"></i> 도서 검색
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/library/popular/">
+            <a class="nav-link" href="{% url 'library:popular_books' %}">
                 <i class="fas fa-star"></i> 인기 도서
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'notice_list' %}">
+                <i class="fas fa-bullhorn"></i> 공지사항
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'library_info_list' %}">
+                <i class="fas fa-clock"></i> 운영시간
             </a>
         </li>
         {% if user.is_authenticated %}
           <li class="nav-item">
-              <a class="nav-link" href="/library/loan-history/">
+              <a class="nav-link" href="{% url 'library:loan_history' %}">
                   <i class="fas fa-history"></i> 대출 이력
               </a>
           </li>
@@ -174,14 +184,20 @@
                 <i class="fas fa-rocket"></i> 빠른 접근
             </h3>
             <div class="text-center">
-                <a href="/library/search/" class="quick-access-btn">
+                <a href="{% url 'library:search_books' %}" class="quick-access-btn">
                     <i class="fas fa-search"></i> 도서 검색
                 </a>
-                <a href="/library/popular/" class="quick-access-btn">
+                <a href="{% url 'library:popular_books' %}" class="quick-access-btn">
                     <i class="fas fa-star"></i> 인기 도서
                 </a>
+                <a href="{% url 'notice_list' %}" class="quick-access-btn">
+                    <i class="fas fa-bullhorn"></i> 공지사항
+                </a>
+                <a href="{% url 'library_info_list' %}" class="quick-access-btn">
+                    <i class="fas fa-clock"></i> 운영시간
+                </a>
                 {% if user.is_authenticated %}
-                <a href="/library/loan-history/" class="quick-access-btn">
+                <a href="{% url 'library:loan_history' %}" class="quick-access-btn">
                     <i class="fas fa-history"></i> 나의 대출 이력
                 </a>
                 {% endif %}

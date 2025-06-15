@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+{% block title %}도서관 운영시간 | KMU 도서관{% endblock %}
+
+{% block content %}
+<style>
+    .schedule-header {
+        background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        color: white;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .schedule-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .schedule-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .schedule-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .schedule-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+    
+    .day-card {
+        background: white;
+        border: 2px solid #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .day-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        border-color: #4ecdc4;
+    }
+    
+    .day-card.today {
+        border-color: #4ecdc4;
+        background: linear-gradient(45deg, #f0fdfc, #e6fffa);
+    }
+    
+    .day-card.today::before {
+        content: 'TODAY';
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+    
+    .day-name {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .day-icon {
+        font-size: 1.2rem;
+        color: #4ecdc4;
+    }
+    
+    .time-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .time-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .time-row:hover {
+        background: linear-gradient(45deg, #e8f6ff, #f0f8ff);
+    }
+    
+    .time-label {
+        font-weight: 600;
+        color: #5d6d7e;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .time-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #2c3e50;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .closed-day {
+        background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
+        border-color: #fdcb6e;
+    }
+    
+    .closed-message {
+        text-align: center;
+        color: #e17055;
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 2rem;
+    }
+    
+    .admin-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    
+    .edit-btn {
+        background: linear-gradient(45deg, #f39c12, #e67e22);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .edit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(243, 156, 18, 0.4);
+        color: white;
+    }
+    
+    .current-status {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+    
+    .status-open {
+        border-left: 5px solid #2ecc71;
+        background: linear-gradient(45deg, #f0fff4, #e8f5e8);
+    }
+    
+    .status-closed {
+        border-left: 5px solid #e74c3c;
+        background: linear-gradient(45deg, #fff5f5, #ffeaea);
+    }
+    
+    .status-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .status-time {
+        font-size: 1.1rem;
+        color: #7f8c8d;
+    }
+    
+    .quick-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    
+    .info-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #4ecdc4;
+    }
+    
+    .info-number {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-label {
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+        .schedule-header {
+            padding: 2rem 0;
+        }
+        
+        .schedule-title {
+            font-size: 2rem;
+        }
+        
+        .schedule-cards {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+        }
+        
+        .day-card {
+            padding: 1rem;
+        }
+        
+        .day-name {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="schedule-header">
+    <div class="container">
+        <h1 class="schedule-title">
+            <i class="fas fa-clock"></i> 도서관 운영시간
+        </h1>
+        <p class="schedule-subtitle">KMU 도서관의 요일별 운영시간을 확인하세요</p>
+    </div>
+</div>
+
+<div class="container">
+    {% comment %} 현재 상태 표시 {% endcomment %}
+    <div class="current-status status-open">
+        <div class="status-title">
+            <i class="fas fa-door-open"></i>
+            현재 운영 중입니다
+        </div>
+        <div class="status-time">오늘 {{ today_info.close_time|time:"H:i" }}까지 이용 가능합니다</div>
+    </div>
+    
+    {% comment %} 빠른 정보 {% endcomment %}
+    <div class="quick-info">
+        <div class="info-card">
+            <div class="info-icon">
+                <i class="fas fa-calendar-week"></i>
+            </div>
+            <div class="info-number">7</div>
+            <div class="info-label">운영 요일</div>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="info-number">12</div>
+            <div class="info-label">일일 운영시간</div>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="info-number">∞</div>
+            <div class="info-label">이용 가능</div>
+        </div>
+    </div>
+    
+    {% if infos %}
+        <div class="schedule-container">
+            <div class="schedule-cards">
+                {% for info in infos %}
+                <div class="day-card {% if info.day == today.weekday %}today{% endif %}">
+                    <div class="day-name">
+                        {% if info.day == 0 %}
+                            <i class="fas fa-sun day-icon"></i>
+                        {% elif info.day == 6 %}
+                            <i class="fas fa-moon day-icon"></i>
+                        {% else %}
+                            <i class="fas fa-calendar-day day-icon"></i>
+                        {% endif %}
+                        {{ info.get_day_display }}
+                    </div>
+                    
+                    {% if info.open_time and info.close_time %}
+                        <div class="time-info">
+                            <div class="time-row">
+                                <div class="time-label">
+                                    <i class="fas fa-door-open"></i>
+                                    개관시간
+                                </div>
+                                <div class="time-value">{{ info.open_time|time:"H:i" }}</div>
+                            </div>
+                            <div class="time-row">
+                                <div class="time-label">
+                                    <i class="fas fa-door-closed"></i>
+                                    폐관시간
+                                </div>
+                                <div class="time-value">{{ info.close_time|time:"H:i" }}</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="closed-message">
+                            <i class="fas fa-times-circle"></i>
+                            휴관일
+                        </div>
+                    {% endif %}
+                    
+                    {% if user.is_authenticated and user.is_admin %}
+                        <div class="admin-actions">
+                            <a href="{% url 'library_info_edit' info.day %}" class="edit-btn">
+                                <i class="fas fa-edit"></i> 수정
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="schedule-container">
+            <div style="padding: 4rem 2rem; text-align: center; color: #7f8c8d;">
+                <div style="font-size: 4rem; color: #bdc3c7; margin-bottom: 1.5rem;">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3>운영시간 정보가 설정되지 않았습니다</h3>
+                <p>관리자가 운영시간을 설정해주세요.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

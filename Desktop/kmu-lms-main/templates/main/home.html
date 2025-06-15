@@ -1,0 +1,473 @@
+{% extends 'base.html' %}
+{% block title %}홈 | KMU 도서관 시스템{% endblock %}
+
+{% block content %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 0;
+        border-radius: 25px;
+        margin-bottom: 3rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+        animation: float 30s infinite linear;
+    }
+    
+    @keyframes float {
+        0% { transform: translateX(0) translateY(0); }
+        100% { transform: translateX(-100px) translateY(-100px); }
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.3rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+    
+    .service-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .service-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        text-align: center;
+        border: 2px solid transparent;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        border-color: #667eea;
+    }
+    
+    .service-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: #667eea;
+    }
+    
+    .service-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+    
+    .service-description {
+        color: #7f8c8d;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .service-btn {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .service-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .content-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .section-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .section-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .section-header {
+        padding: 1.5rem 2rem;
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .notice-header {
+        background: linear-gradient(45deg, #ff9068, #fd746c);
+    }
+    
+    .time-header {
+        background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    }
+    
+    .section-content {
+        padding: 0;
+    }
+    
+    .notice-item, .time-item {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #f8f9fa;
+        transition: all 0.3s ease;
+    }
+    
+    .notice-item:hover, .time-item:hover {
+        background: linear-gradient(45deg, #f8f9ff, #e8f2ff);
+    }
+    
+    .notice-item:last-child, .time-item:last-child {
+        border-bottom: none;
+    }
+    
+    .notice-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+    
+    .notice-date {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+    
+    .time-day {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .time-hours {
+        color: #7f8c8d;
+        font-size: 1rem;
+    }
+    
+    .section-footer {
+        padding: 1rem 2rem;
+        background: #f8f9fa;
+        text-align: center;
+    }
+    
+    .view-all-btn {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    
+    .view-all-btn:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+    
+    .popular-books {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .popular-books:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .popular-header {
+        background: linear-gradient(45deg, #f093fb, #f5576c);
+        color: white;
+        padding: 1.5rem 2rem;
+        font-weight: 700;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .book-item {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #f8f9fa;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .book-item:hover {
+        background: linear-gradient(45deg, #fff5f8, #ffeef2);
+    }
+    
+    .book-item:last-child {
+        border-bottom: none;
+    }
+    
+    .book-info {
+        flex: 1;
+    }
+    
+    .book-title {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .book-author {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+    }
+    
+    .book-stats {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #e74c3c;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .empty-state {
+        padding: 3rem 2rem;
+        text-align: center;
+        color: #7f8c8d;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+        color: #bdc3c7;
+        margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .content-section {
+            grid-template-columns: 1fr;
+        }
+        
+        .service-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .section-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            <i class="fas fa-university"></i>
+            KMU 도서관에 오신 것을 환영합니다
+        </h1>
+        <p class="hero-subtitle">
+            지식의 보고에서 새로운 발견을 시작하세요
+        </p>
+    </div>
+</div>
+
+<div class="service-grid">
+    <div class="service-card">
+        <div class="service-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3 class="service-title">도서 검색</h3>
+        <p class="service-description">
+            원하는 도서를 빠르게 찾아보세요.<br>
+            제목, 저자별 검색이 가능합니다.
+        </p>
+        <a href="{% url 'library:search_books' %}" class="service-btn">
+            <i class="fas fa-search"></i> 검색하기
+        </a>
+    </div>
+    
+    {% if user.is_authenticated %}
+    <div class="service-card">
+        <div class="service-icon">
+            <i class="fas fa-history"></i>
+        </div>
+        <h3 class="service-title">대출 이력</h3>
+        <p class="service-description">
+            나의 도서 대출 현황과<br>
+            이력을 한눈에 확인하세요.
+        </p>
+        <a href="{% url 'library:loan_history' %}" class="service-btn">
+            <i class="fas fa-list"></i> 이력 보기
+        </a>
+    </div>
+    
+    <div class="service-card">
+        <div class="service-icon">
+            <i class="fas fa-bookmark"></i>
+        </div>
+        <h3 class="service-title">예약 관리</h3>
+        <p class="service-description">
+            예약한 도서 목록을<br>
+            확인하고 관리하세요.
+        </p>
+        <a href="{% url 'library:my_reservations' %}" class="service-btn">
+            <i class="fas fa-calendar"></i> 예약 보기
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="content-section">
+    <div class="section-card">
+        <div class="section-header notice-header">
+            <i class="fas fa-bullhorn"></i>
+            최신 공지사항
+        </div>
+        <div class="section-content">
+            {% for notice in notices %}
+            <div class="notice-item">
+                <div class="notice-title">
+                    <i class="fas fa-chevron-right" style="font-size: 0.8rem; margin-right: 0.5rem; color: #ff9068;"></i>
+                    {{ notice.title }}
+                </div>
+                <div class="notice-date">{{ notice.posted_date|date:"Y년 m월 d일 H:i" }}</div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <p>등록된 공지사항이 없습니다.</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-footer">
+            <a href="{% url 'notice_list' %}" class="view-all-btn">
+                <i class="fas fa-plus"></i> 전체 공지사항 보기
+            </a>
+        </div>
+    </div>
+    
+    <div class="section-card">
+        <div class="section-header time-header">
+            <i class="fas fa-clock"></i>
+            오늘의 운영시간
+        </div>
+        <div class="section-content">
+            {% if today_info %}
+            <div class="time-item">
+                <div class="time-day">
+                    <i class="fas fa-calendar-day" style="margin-right: 0.5rem; color: #4ecdc4;"></i>
+                    {{ today_info.get_day_display }}
+                </div>
+                <div class="time-hours">
+                    <i class="fas fa-door-open" style="margin-right: 0.5rem;"></i>
+                    개관: {{ today_info.open_time|time:"H:i" }}
+                </div>
+                <div class="time-hours" style="margin-top: 0.3rem;">
+                    <i class="fas fa-door-closed" style="margin-right: 0.5rem;"></i>
+                    폐관: {{ today_info.close_time|time:"H:i" }}
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <p>운영시간 정보가 없습니다.</p>
+            </div>
+            {% endif %}
+        </div>
+        <div class="section-footer">
+            <a href="{% url 'library_info_list' %}" class="view-all-btn">
+                <i class="fas fa-calendar-alt"></i> 전체 운영시간 보기
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="popular-books">
+    <div class="popular-header">
+        <i class="fas fa-fire"></i>
+        인기 도서 Top 3
+    </div>
+    <div class="section-content">
+        {% for book in popular_books %}
+        <div class="book-item">
+            <div class="book-info">
+                <div class="book-title">
+                    <i class="fas fa-book" style="margin-right: 0.5rem; color: #f093fb;"></i>
+                    {{ book.title }}
+                </div>
+                <div class="book-author">{{ book.author }}</div>
+            </div>
+            <div class="book-stats">
+                <i class="fas fa-download"></i>
+                {{ book.loan_count }}회
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <p>아직 대출된 도서가 없습니다.</p>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="section-footer">
+        <a href="{% url 'library:popular_books' %}" class="view-all-btn">
+            <i class="fas fa-trophy"></i> 전체 인기 도서 보기
+        </a>
+    </div>
+</div>
+{% endblock %}

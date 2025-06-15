@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% block title %}인기 도서{% endblock %}
+
+{% block content %}
+<style>
+    .popular-header {
+        background: linear-gradient(135deg, #ff9068 0%, #fd746c 100%);
+        color: white;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .ranking-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .ranking-table {
+        margin: 0;
+        border: none;
+    }
+    
+    .ranking-table thead {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+    }
+    
+    .ranking-table thead th {
+        border: none;
+        padding: 1.2rem;
+        font-weight: 600;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+    
+    .ranking-table thead th:first-child {
+        border-radius: 15px 0 0 0;
+    }
+    
+    .ranking-table thead th:last-child {
+        border-radius: 0 15px 0 0;
+    }
+    
+    .ranking-table tbody tr {
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .ranking-table tbody tr:hover {
+        background: linear-gradient(45deg, #f8f9ff, #e8f2ff);
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .ranking-table tbody td {
+        padding: 1.5rem 1.2rem;
+        border: none;
+        vertical-align: middle;
+        text-align: center;
+    }
+    
+    .rank-number {
+        font-size: 1.8rem;
+        font-weight: bold;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    
+    .rank-1 {
+        background: linear-gradient(45deg, #ffd700, #ffed4e);
+        color: #d68910;
+    }
+    
+    .rank-2 {
+        background: linear-gradient(45deg, #c0c0c0, #e5e5e5);
+        color: #7d7d7d;
+    }
+    
+    .rank-3 {
+        background: linear-gradient(45deg, #cd7f32, #deb887);
+        color: #8b4513;
+    }
+    
+    .rank-other {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+    }
+    
+    .book-title-cell {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.1rem;
+        text-align: left !important;
+    }
+    
+    .book-author-cell {
+        color: #7f8c8d;
+        font-style: italic;
+        text-align: left !important;
+    }
+    
+    .loan-count {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #e74c3c;
+    }
+    
+    .medal-icon {
+        font-size: 1.5rem;
+        margin-right: 0.5rem;
+    }
+    
+    .gold { color: #ffd700; }
+    .silver { color: #c0c0c0; }
+    .bronze { color: #cd7f32; }
+    .trophy { color: #667eea; }
+    
+    .empty-state {
+        background: white;
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #bdc3c7;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #667eea;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+</style>
+
+<div class="popular-header">
+    <div class="container">
+        <h1><i class="fas fa-trophy"></i> 인기 도서 순위</h1>
+        <p class="lead">가장 많이 사랑받는 도서들을 만나보세요</p>
+    </div>
+</div>
+
+<div class="container">
+    {% if books %}
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-books"></i>
+                </div>
+                <div class="stat-number">{{ books|length }}</div>
+                <div class="stat-label">등록된 도서</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-number">{{ books.0.loan_count|default:0 }}</div>
+                <div class="stat-label">최고 대출 횟수</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="stat-number">Top</div>
+                <div class="stat-label">인기 순위</div>
+            </div>
+        </div>
+        
+        <div class="ranking-container">
+            <table class="table ranking-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-medal"></i> 순위</th>
+                        <th><i class="fas fa-book"></i> 도서 정보</th>
+                        <th><i class="fas fa-chart-line"></i> 대출 횟수</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>
+                            <div class="rank-number {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% else %}rank-other{% endif %}">
+                                {% if forloop.counter == 1 %}
+                                    <i class="fas fa-crown gold medal-icon"></i>
+                                {% elif forloop.counter == 2 %}
+                                    <i class="fas fa-medal silver medal-icon"></i>
+                                {% elif forloop.counter == 3 %}
+                                    <i class="fas fa-medal bronze medal-icon"></i>
+                                {% else %}
+                                    {{ forloop.counter }}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="book-title-cell">
+                                <i class="fas fa-book-open"></i> {{ book.title }}
+                            </div>
+                            <div class="book-author-cell">
+                                <i class="fas fa-user-edit"></i> {{ book.author }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="loan-count">
+                                <i class="fas fa-download"></i> {{ book.loan_count }}회
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-book-open"></i>
+            <h3 class="text-muted">아직 대출된 도서가 없습니다</h3>
+            <p class="text-muted">첫 번째로 도서를 대출해보세요!</p>
+            <a href="/library/search/" class="btn btn-primary" style="border-radius: 50px; padding: 0.8rem 2rem; margin-top: 1rem;">
+                <i class="fas fa-search"></i> 도서 검색하기
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

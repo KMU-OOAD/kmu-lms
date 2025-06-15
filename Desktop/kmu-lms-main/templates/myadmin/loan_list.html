@@ -1,0 +1,13 @@
+<h1>📋 대출 관리</h1>
+<ul>
+  {% for loan in loans %}
+    <li>{{ loan.userID.username }} - {{ loan.bookID.title }} (반납 예정일: {{ loan.due_date }})
+      <form action="{% url 'myadmin:extend_loan' loan.loanID %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">연장</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'myadmin:admin_dashboard' %}">← 관리자 대쉬보드로</a>

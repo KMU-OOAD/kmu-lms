@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% block title %}{% if form.instance.pk %}공지사항 수정{% else %}공지사항 작성{% endif %} | KMU 도서관{% endblock %}
+
+{% block content %}
+<style>
+    .form-header {
+        background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        color: white;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .breadcrumb-custom {
+        background: none;
+        padding: 0;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumb-custom a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+    
+    .breadcrumb-custom a:hover {
+        color: white;
+        text-decoration: underline;
+    }
+    
+    .breadcrumb-custom .active {
+        color: white;
+        font-weight: 600;
+    }
+    
+    .form-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+    
+    .form-content {
+        padding: 3rem;
+    }
+    
+    .form-group {
+        margin-bottom: 2rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-input, .form-textarea {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        font-family: inherit;
+    }
+    
+    .form-input:focus, .form-textarea:focus {
+        outline: none;
+        border-color: #4ecdc4;
+        background: white;
+        box-shadow: 0 0 0 0.2rem rgba(78, 205, 196, 0.25);
+        transform: translateY(-2px);
+    }
+    
+    .form-textarea {
+        min-height: 200px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+    
+    .char-counter {
+        text-align: right;
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        margin-top: 0.5rem;
+    }
+    
+    .form-actions {
+        background: #f8f9fa;
+        padding: 2rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .btn-custom {
+        border-radius: 50px;
+        padding: 1rem 2.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+    
+    .btn-save {
+        background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        color: white;
+    }
+    
+    .btn-save:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(78, 205, 196, 0.4);
+        color: white;
+    }
+    
+    .btn-cancel {
+        background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+        color: white;
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(149, 165, 166, 0.4);
+        color: white;
+    }
+    
+    .form-help {
+        background: linear-gradient(45deg, #e8f6ff, #f0f8ff);
+        border: 1px solid #d1ecf1;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .help-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .help-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .help-list li {
+        padding: 0.3rem 0;
+        color: #5d6d7e;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .help-list li i {
+        color: #4ecdc4;
+        font-size: 0.8rem;
+    }
+    
+    /* Django form field 스타일링 */
+    .form-content input[type="text"],
+    .form-content textarea {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+    
+    .form-content input[type="text"]:focus,
+    .form-content textarea:focus {
+        outline: none;
+        border-color: #4ecdc4;
+        background: white;
+        box-shadow: 0 0 0 0.2rem rgba(78, 205, 196, 0.25);
+        transform: translateY(-2px);
+    }
+    
+    .form-content textarea {
+        min-height: 200px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+    
+    .form-content label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+        display: block;
+    }
+    
+    .form-content p {
+        margin-bottom: 2rem;
+    }
+    
+    .error-message {
+        color: #e74c3c;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #fdf2f2;
+        border-radius: 10px;
+        border-left: 4px solid #e74c3c;
+    }
+    
+    @media (max-width: 768px) {
+        .form-header {
+            padding: 2rem 0;
+        }
+        
+        .form-title {
+            font-size: 2rem;
+        }
+        
+        .form-content {
+            padding: 2rem;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .btn-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="form-header">
+    <div class="container">
+        <nav class="breadcrumb-custom">
+            <a href="/">홈</a> > 
+            <a href="{% url 'notice_list' %}">공지사항</a> > 
+            <span class="active">
+                {% if form.instance.pk %}수정{% else %}작성{% endif %}
+            </span>
+        </nav>
+        
+        <h1 class="form-title">
+            <i class="fas fa-edit"></i>
+            {% if form.instance.pk %}
+                공지사항 수정
+            {% else %}
+                공지사항 작성
+            {% endif %}
+        </h1>
+        <p class="form-subtitle">
+            {% if form.instance.pk %}
+                기존 공지사항을 수정합니다
+            {% else %}
+                새로운 공지사항을 작성합니다
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="form-help">
+        <div class="help-title">
+            <i class="fas fa-info-circle"></i>
+            작성 가이드라인
+        </div>
+        <ul class="help-list">
+            <li><i class="fas fa-check"></i> 제목은 명확하고 간결하게 작성해주세요</li>
+            <li><i class="fas fa-check"></i> 내용은 독자가 이해하기 쉽게 작성해주세요</li>
+            <li><i class="fas fa-check"></i> 중요한 정보는 굵게 표시하거나 강조해주세요</li>
+            <li><i class="fas fa-check"></i> 작성 완료 후 내용을 한 번 더 확인해주세요</li>
+        </ul>
+    </div>
+    
+    <div class="form-container">
+        <div class="form-content">
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">
+                        {% if 'title' in field.name %}
+                            <i class="fas fa-heading"></i>
+                        {% elif 'content' in field.name %}
+                            <i class="fas fa-align-left"></i>
+                        {% else %}
+                            <i class="fas fa-edit"></i>
+                        {% endif %}
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error-message">
+                            {{ field.errors.0 }}
+                        </div>
+                    {% endif %}
+                    {% if 'content' in field.name %}
+                        <div class="char-counter">
+                            <span id="char-count">0</span> / 2000자
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+        
+        <div class="form-actions">
+            <a href="{% url 'notice_list' %}" class="btn-custom btn-cancel">
+                <i class="fas fa-times"></i>
+                취소
+            </a>
+            
+            <button type="submit" form="notice-form" class="btn-custom btn-save">
+                <i class="fas fa-save"></i>
+                {% if form.instance.pk %}수정 완료{% else %}작성 완료{% endif %}
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 폼에 ID 추가
+    const form = document.querySelector('form');
+    if (form) {
+        form.id = 'notice-form';
+    }
+    
+    // 글자 수 카운터
+    const textarea = document.querySelector('textarea');
+    const charCount = document.getElementById('char-count');
+    
+    if (textarea && charCount) {
+        function updateCharCount() {
+            const count = textarea.value.length;
+            charCount.textContent = count;
+            
+            if (count > 2000) {
+                charCount.style.color = '#e74c3c';
+            } else if (count > 1800) {
+                charCount.style.color = '#f39c12';
+            } else {
+                charCount.style.color = '#7f8c8d';
+            }
+        }
+        
+        textarea.addEventListener('input', updateCharCount);
+        updateCharCount(); // 초기 로드 시 실행
+    }
+});
+</script>
+{% endblock %}

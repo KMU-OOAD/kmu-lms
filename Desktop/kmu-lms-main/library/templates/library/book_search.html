@@ -1,0 +1,39 @@
+{% extends 'base.html' %}  {# 가정: base.html 템플릿이 존재 #}
+
+{% block title %}도서 검색{% endblock %}
+
+{% block content %}
+  <h2>도서 검색</h2>
+  <form method="get" action=".">
+    {{ form.as_p }}
+    <button type="submit">검색</button>
+  </form>
+
+  <hr>
+
+  <h3>검색 결과</h3>
+  {% if books %}
+    <ul>
+      {% for book in books %}
+        <li>
+          <strong>{{ book.title }}</strong> (저자: {{ book.author }}) - 
+          {% if book.available %}
+            <span style="color: green;">대출 가능</span>
+            {# 예약 기능 링크 (나중에 추가) #}
+            <a href="{% url 'library:reserve_book' book.bookID %}">예약하기</a> {# library 네임스페이스 가정 #}
+            {# 대출 기능 링크 (나중에 추가) #}
+            <a href="{% url 'library:borrow_book' book.bookID %}">대출하기</a> {# library 네임스페이스 가정 #}
+          {% else %}
+            <span style="color: red;">대출 중</span>
+            {# 예약 기능 링크 (나중에 추가) #}
+            <a href="{% url 'library:reserve_book' book.bookID %}">예약하기</a> {# library 네임스페이스 가정 #}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% elif form.is_valid and form.cleaned_data.query %}
+    <p>"{{ form.cleaned_data.query }}"에 대한 검색 결과가 없습니다.</p>
+  {% else %}
+    <p>검색어를 입력해주세요.</p>
+  {% endif %}
+{% endblock %} 

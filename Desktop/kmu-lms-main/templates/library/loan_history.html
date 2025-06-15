@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+
+{% block title %}나의 대출 이력{% endblock %}
+
+{% block content %}
+<style>
+    .history-header {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #2c3e50;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .history-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .history-table {
+        margin: 0;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .history-table thead {
+        background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        color: white;
+    }
+    
+    .history-table thead th {
+        border: none;
+        padding: 1.2rem 1rem;
+        font-weight: 600;
+        text-align: center;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+    
+    .history-table tbody tr {
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .history-table tbody tr:hover {
+        background: linear-gradient(45deg, #f0fdfc, #e6fffa);
+        transform: scale(1.01);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .history-table tbody td {
+        padding: 1.2rem 1rem;
+        border: none;
+        vertical-align: middle;
+        text-align: center;
+    }
+    
+    .book-info {
+        text-align: left !important;
+    }
+    
+    .book-title {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .book-author {
+        color: #7f8c8d;
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+    
+    .date-cell {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        color: #5d6d7e;
+    }
+    
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-returned {
+        background: linear-gradient(45deg, #2ecc71, #27ae60);
+        color: white;
+    }
+    
+    .status-overdue {
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+        color: white;
+    }
+    
+    .status-active {
+        background: linear-gradient(45deg, #f39c12, #e67e22);
+        color: white;
+    }
+    
+    .action-btn {
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        border: none;
+        background: linear-gradient(45deg, #3498db, #2980b9);
+        color: white;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        color: white;
+    }
+    
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-icon.total { color: #3498db; }
+    .stat-icon.active { color: #f39c12; }
+    .stat-icon.returned { color: #2ecc71; }
+    .stat-icon.overdue { color: #e74c3c; }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    
+    .empty-state {
+        background: white;
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #bdc3c7;
+        margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .history-table {
+            font-size: 0.8rem;
+        }
+        
+        .history-table th,
+        .history-table td {
+            padding: 0.8rem 0.5rem;
+        }
+        
+        .book-title {
+            font-size: 0.9rem;
+        }
+        
+        .book-author {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<div class="history-header">
+    <div class="container">
+        <h1><i class="fas fa-history"></i> 나의 대출 이력</h1>
+        <p class="lead">도서 대출 현황과 이력을 확인하세요</p>
+    </div>
+</div>
+
+<div class="container">
+    {% if loans %}
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="fas fa-books"></i>
+                </div>
+                <div class="stat-number">{{ loans|length }}</div>
+                <div class="stat-label">총 대출 수</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon active">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+                <div class="stat-number">
+                    {% with active_count=0 %}
+                        {% for loan in loans %}
+                            {% if not loan.return_date %}
+                                {% if active_count == 0 %}
+                                    {% with active_count=1 %}{% endwith %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% for loan in loans %}
+                            {% if not loan.return_date %}1{% endif %}
+                        {% empty %}0{% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="stat-label">대출 중</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon returned">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number">
+                    {% for loan in loans %}
+                        {% if loan.return_date %}1{% endif %}
+                    {% empty %}0{% endfor %}
+                </div>
+                <div class="stat-label">반납 완료</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon overdue">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-number">
+                    {% for loan in loans %}
+                        {% if not loan.return_date and loan.due_date < date_today %}1{% endif %}
+                    {% empty %}0{% endfor %}
+                </div>
+                <div class="stat-label">연체</div>
+            </div>
+        </div>
+        
+        <div class="history-container">
+            <div class="table-responsive">
+                <table class="table history-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-book"></i> 도서 정보</th>
+                            <th><i class="fas fa-calendar-alt"></i> 대출일</th>
+                            <th><i class="fas fa-clock"></i> 반납예정일</th>
+                            <th><i class="fas fa-calendar-check"></i> 반납일</th>
+                            <th><i class="fas fa-info-circle"></i> 상태</th>
+                            <th><i class="fas fa-cogs"></i> 동작</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in loans %}
+                        <tr>
+                            <td class="book-info">
+                                <div class="book-title">
+                                    <i class="fas fa-book-open"></i> {{ loan.bookID.title }}
+                                </div>
+                                <div class="book-author">
+                                    <i class="fas fa-user-edit"></i> {{ loan.bookID.author }}
+                                </div>
+                            </td>
+                            <td class="date-cell">{{ loan.start_date|date:"Y.m.d" }}</td>
+                            <td class="date-cell">{{ loan.due_date|date:"Y.m.d" }}</td>
+                            <td class="date-cell">
+                                {% if loan.return_date %}
+                                    {{ loan.return_date|date:"Y.m.d" }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if loan.return_date %}
+                                    <span class="status-badge status-returned">
+                                        <i class="fas fa-check"></i> 반납완료
+                                    </span>
+                                {% elif loan.due_date < date_today %}
+                                    <span class="status-badge status-overdue">
+                                        <i class="fas fa-exclamation"></i> 연체
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-active">
+                                        <i class="fas fa-clock"></i> 대출중
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not loan.return_date %}
+                                    <a href="{% url 'library:return_book' loan.loanID %}" class="action-btn">
+                                        <i class="fas fa-undo"></i> 반납하기
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-book"></i>
+            <h3 class="text-muted">대출 이력이 없습니다</h3>
+            <p class="text-muted">새로운 도서를 대출해보세요!</p>
+            <a href="/library/search/" class="btn btn-primary" style="border-radius: 50px; padding: 0.8rem 2rem; margin-top: 1rem; background: linear-gradient(45deg, #3498db, #2980b9); border: none;">
+                <i class="fas fa-search"></i> 도서 검색하기
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

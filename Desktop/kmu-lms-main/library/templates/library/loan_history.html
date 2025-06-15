@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}나의 대출 이력{% endblock %}
+
+{% block content %}
+  <h2>나의 대출 이력</h2>
+  {% if loans %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>도서명</th>
+                    <th>저자</th>
+                    <th>대출일</th>
+                    <th>반납예정일</th>
+                    <th>반납일</th>
+                    <th>상태</th>
+                    <th>동작</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in loans %}
+                <tr>
+                    <td>{{ loan.bookID.title }}</td>
+                    <td>{{ loan.bookID.author }}</td>
+                    <td>{{ loan.start_date }}</td>
+                    <td>{{ loan.due_date }}</td>
+                    <td>{{ loan.return_date|default:"-" }}</td>
+                    <td>
+                        {% if loan.return_date %}
+                            <span class="badge bg-success">반납완료</span>
+                        {% elif loan.due_date < date_today %}
+                            <span class="badge bg-danger">연체</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">대출중</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not loan.return_date %}
+                            <a href="{% url 'library:return_book' loan.loanID %}" class="btn btn-sm btn-primary">반납하기</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        대출 이력이 없습니다.
+    </div>
+    {% endif %}
+{% endblock %} 

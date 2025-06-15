@@ -1,0 +1,497 @@
+{% extends 'base.html' %}
+{% block title %}운영시간 설정 | KMU 도서관{% endblock %}
+
+{% block content %}
+<style>
+    .settings-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .breadcrumb-custom {
+        background: none;
+        padding: 0;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumb-custom a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+    
+    .breadcrumb-custom a:hover {
+        color: white;
+        text-decoration: underline;
+    }
+    
+    .breadcrumb-custom .active {
+        color: white;
+        font-weight: 600;
+    }
+    
+    .settings-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .settings-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .settings-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+    
+    .settings-content {
+        padding: 3rem;
+    }
+    
+    .form-section {
+        margin-bottom: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    
+    .form-group {
+        margin-bottom: 2rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        font-family: inherit;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+    
+    .time-input-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .time-input-wrapper {
+        position: relative;
+    }
+    
+    .time-input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+    }
+    
+    .time-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+    
+    .time-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+    
+    .form-actions {
+        background: #f8f9fa;
+        padding: 2rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .btn-custom {
+        border-radius: 50px;
+        padding: 1rem 2.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+    
+    .btn-save {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+    }
+    
+    .btn-save:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-cancel {
+        background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+        color: white;
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(149, 165, 166, 0.4);
+        color: white;
+    }
+    
+    .settings-help {
+        background: linear-gradient(45deg, #e8f6ff, #f0f8ff);
+        border: 1px solid #d1ecf1;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .help-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .help-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .help-list li {
+        padding: 0.3rem 0;
+        color: #5d6d7e;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .help-list li i {
+        color: #667eea;
+        font-size: 0.8rem;
+    }
+    
+    .day-badge {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+    }
+    
+    .closed-option {
+        background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
+        border: 2px solid #fdcb6e;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .closed-checkbox {
+        margin-right: 0.5rem;
+        transform: scale(1.2);
+    }
+    
+    .closed-label {
+        color: #e17055;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    /* Django form field 스타일링 */
+    .settings-content input[type="time"] {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        box-sizing: border-box;
+    }
+    
+    .settings-content input[type="time"]:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+    
+    .settings-content label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+        display: block;
+    }
+    
+    .settings-content p {
+        margin-bottom: 2rem;
+    }
+    
+    .error-message {
+        color: #e74c3c;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #fdf2f2;
+        border-radius: 10px;
+        border-left: 4px solid #e74c3c;
+    }
+    
+    @media (max-width: 768px) {
+        .settings-header {
+            padding: 2rem 0;
+        }
+        
+        .settings-title {
+            font-size: 2rem;
+        }
+        
+        .settings-content {
+            padding: 2rem;
+        }
+        
+        .time-input-group {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .btn-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="settings-header">
+    <div class="container">
+        <nav class="breadcrumb-custom">
+            <a href="/">홈</a> > 
+            <a href="{% url 'library_info_list' %}">운영시간</a> > 
+            <span class="active">설정</span>
+        </nav>
+        
+        <h1 class="settings-title">
+            <i class="fas fa-cog"></i> 운영시간 설정
+        </h1>
+        <p class="settings-subtitle">도서관의 요일별 운영시간을 설정합니다</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="settings-help">
+        <div class="help-title">
+            <i class="fas fa-info-circle"></i>
+            설정 가이드라인
+        </div>
+        <ul class="help-list">
+            <li><i class="fas fa-check"></i> 24시간 형식으로 시간을 입력해주세요 (예: 09:00, 18:00)</li>
+            <li><i class="fas fa-check"></i> 휴관일의 경우 시간을 입력하지 마세요</li>
+            <li><i class="fas fa-check"></i> 개관시간은 폐관시간보다 빨라야 합니다</li>
+            <li><i class="fas fa-check"></i> 설정 후 저장을 클릭하여 변경사항을 적용하세요</li>
+        </ul>
+    </div>
+    
+    <div class="settings-container">
+        <div class="settings-content">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-calendar-day"></i>
+                        {{ form.instance.get_day_display|default:"요일" }} 운영시간 설정
+                    </div>
+                    
+                    <div class="day-badge">
+                        <i class="fas fa-calendar"></i>
+                        {{ form.instance.get_day_display|default:"선택된 요일" }}
+                    </div>
+                    
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">
+                            {% if 'open' in field.name %}
+                                <i class="fas fa-door-open"></i>
+                            {% elif 'close' in field.name %}
+                                <i class="fas fa-door-closed"></i>
+                            {% else %}
+                                <i class="fas fa-clock"></i>
+                            {% endif %}
+                            {{ field.label }}
+                        </label>
+                        
+                        <div class="time-input-wrapper">
+                            {% if 'open' in field.name %}
+                                <i class="fas fa-sun time-icon"></i>
+                            {% elif 'close' in field.name %}
+                                <i class="fas fa-moon time-icon"></i>
+                            {% endif %}
+                            {{ field }}
+                        </div>
+                        
+                        {% if field.errors %}
+                            <div class="error-message">
+                                {{ field.errors.0 }}
+                            </div>
+                        {% endif %}
+                        
+                        {% if 'open' in field.name %}
+                        <small style="color: #7f8c8d; margin-top: 0.5rem; display: block;">
+                            <i class="fas fa-lightbulb"></i>
+                            도서관이 문을 여는 시간을 설정하세요
+                        </small>
+                        {% elif 'close' in field.name %}
+                        <small style="color: #7f8c8d; margin-top: 0.5rem; display: block;">
+                            <i class="fas fa-moon"></i>
+                            도서관이 문을 닫는 시간을 설정하세요
+                        </small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="closed-option">
+                        <label class="closed-label">
+                            <input type="checkbox" class="closed-checkbox" id="is-closed">
+                            <i class="fas fa-times-circle"></i>
+                            이 요일은 휴관일입니다
+                        </label>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #d63031;">
+                            체크하면 운영시간이 무시되고 휴관일로 표시됩니다
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="form-actions">
+            <a href="{% url 'library_info_list' %}" class="btn-custom btn-cancel">
+                <i class="fas fa-times"></i>
+                취소
+            </a>
+            
+            <button type="submit" form="settings-form" class="btn-custom btn-save">
+                <i class="fas fa-save"></i>
+                설정 저장
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 폼에 ID 추가
+    const form = document.querySelector('form');
+    if (form) {
+        form.id = 'settings-form';
+    }
+    
+    // 휴관일 체크박스 기능
+    const closedCheckbox = document.getElementById('is-closed');
+    const timeInputs = document.querySelectorAll('input[type="time"]');
+    
+    if (closedCheckbox && timeInputs.length > 0) {
+        closedCheckbox.addEventListener('change', function() {
+            timeInputs.forEach(input => {
+                if (this.checked) {
+                    input.disabled = true;
+                    input.value = '';
+                    input.style.opacity = '0.5';
+                } else {
+                    input.disabled = false;
+                    input.style.opacity = '1';
+                }
+            });
+        });
+    }
+    
+    // 시간 유효성 검사
+    const openTimeInput = document.querySelector('input[name*="open"]');
+    const closeTimeInput = document.querySelector('input[name*="close"]');
+    
+    if (openTimeInput && closeTimeInput) {
+        function validateTimes() {
+            const openTime = openTimeInput.value;
+            const closeTime = closeTimeInput.value;
+            
+            if (openTime && closeTime && openTime >= closeTime) {
+                closeTimeInput.setCustomValidity('폐관시간은 개관시간보다 늦어야 합니다.');
+            } else {
+                closeTimeInput.setCustomValidity('');
+            }
+        }
+        
+        openTimeInput.addEventListener('change', validateTimes);
+        closeTimeInput.addEventListener('change', validateTimes);
+    }
+});
+</script>
+{% endblock %}

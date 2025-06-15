@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% block title %}공지사항{% endblock %}
+
+{% block content %}
+<style>
+    .notice-header {
+        background: linear-gradient(135deg, #ff9068 0%, #fd746c 100%);
+        color: white;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .notice-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .notice-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .notice-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .notice-table {
+        margin: 0;
+        border: none;
+    }
+    
+    .notice-table thead {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+    }
+    
+    .notice-table thead th {
+        border: none;
+        padding: 1.5rem;
+        font-weight: 600;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+    
+    .notice-table tbody tr {
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .notice-table tbody tr:hover {
+        background: linear-gradient(45deg, #f8f9ff, #e8f2ff);
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .notice-table tbody td {
+        padding: 1.5rem;
+        border: none;
+        vertical-align: middle;
+        text-align: center;
+    }
+    
+    .notice-link {
+        color: #2c3e50;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        transition: all 0.3s ease;
+    }
+    
+    .notice-link:hover {
+        color: #667eea;
+        transform: translateX(5px);
+    }
+    
+    .notice-link i {
+        margin-right: 0.5rem;
+        color: #ff9068;
+    }
+    
+    .notice-date {
+        color: #7f8c8d;
+        font-family: 'Courier New', monospace;
+        font-size: 0.95rem;
+    }
+    
+    .admin-controls {
+        padding: 2rem;
+        background: #f8f9fa;
+        text-align: center;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .create-btn {
+        background: linear-gradient(45deg, #ff9068, #fd746c);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 1rem 2.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .create-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255, 144, 104, 0.4);
+        color: white;
+    }
+    
+    .empty-state {
+        padding: 4rem 2rem;
+        text-align: center;
+        color: #7f8c8d;
+    }
+    
+    .empty-icon {
+        font-size: 4rem;
+        color: #bdc3c7;
+        margin-bottom: 1.5rem;
+    }
+    
+    .empty-message {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-submessage {
+        color: #95a5a6;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+    
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ff9068;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-label {
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    
+    .notice-badge {
+        background: linear-gradient(45deg, #ff9068, #fd746c);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .notice-header {
+            padding: 2rem 0;
+        }
+        
+        .notice-title {
+            font-size: 2rem;
+        }
+        
+        .notice-table {
+            font-size: 0.9rem;
+        }
+        
+        .notice-table th,
+        .notice-table td {
+            padding: 1rem 0.5rem;
+        }
+        
+        .notice-link {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="notice-header">
+    <div class="container">
+        <h1 class="notice-title">
+            <i class="fas fa-bullhorn"></i> 공지사항
+        </h1>
+        <p class="notice-subtitle">도서관의 중요한 소식을 확인하세요</p>
+    </div>
+</div>
+
+<div class="container">
+    {% if notices %}
+        <div class="stats-card">
+            <div class="stats-number">{{ notices|length }}</div>
+            <div class="stats-label">총 공지사항</div>
+        </div>
+        
+        <div class="notice-container">
+            <table class="table notice-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70%; text-align: left;">
+                            <i class="fas fa-file-alt"></i> 제목
+                        </th>
+                        <th style="width: 30%;">
+                            <i class="fas fa-calendar-alt"></i> 작성일
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notice in notices %}
+                    <tr>
+                        <td style="text-align: left;">
+                            <a href="{% url 'notice_detail' notice.pk %}" class="notice-link">
+                                <i class="fas fa-chevron-right"></i>
+                                {{ notice.title }}
+                                {% if notice.posted_date|date:"Y-m-d" == today|date:"Y-m-d" %}
+                                    <span class="notice-badge">NEW</span>
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="notice-date">{{ notice.posted_date|date:"Y.m.d H:i" }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            {% if user.is_admin %}
+                <div class="admin-controls">
+                    <a href="{% url 'notice_create' %}" class="create-btn">
+                        <i class="fas fa-plus"></i> 새 공지사항 작성
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="notice-container">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3 class="empty-message">등록된 공지사항이 없습니다</h3>
+                <p class="empty-submessage">아직 공지사항이 등록되지 않았습니다.</p>
+            </div>
+            
+            {% if user.is_admin %}
+                <div class="admin-controls">
+                    <a href="{% url 'notice_create' %}" class="create-btn">
+                        <i class="fas fa-plus"></i> 첫 번째 공지사항 작성
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

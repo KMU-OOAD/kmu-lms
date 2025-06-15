@@ -1,0 +1,18 @@
+<h1>📚 신규 도서 등록</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+
+  {% if form.errors %}
+    <ul style="color: red;">
+      {% for field, errors in form.errors.items %}
+        <li>{{ field }}: {{ errors|join:", " }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  
+  <button type="submit">등록</button>
+</form>
+
+<a href="{% url 'myadmin:book_list' %}">← 도서 목록으로</a>

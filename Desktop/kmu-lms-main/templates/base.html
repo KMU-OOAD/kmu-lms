@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KMU 도서관 시스템{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: linear-gradient(45deg, #2c3e50, #3498db) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+        
+        .navbar-brand i {
+            color: #f39c12;
+            margin-right: 0.5rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            margin: 0 0.2rem;
+            padding: 0.5rem 1rem !important;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-1px);
+        }
+        
+        .container {
+            margin-top: 2rem;
+        }
+        
+        .welcome-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-section h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .welcome-section .lead {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .library-icon {
+            font-size: 4rem;
+            color: #3498db;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quick-access {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .quick-access-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .quick-access-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            color: white;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+        <i class="fas fa-university"></i>
+        KMU Library System
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="/library/search/">
+                <i class="fas fa-search"></i> 도서 검색
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/library/popular/">
+                <i class="fas fa-star"></i> 인기 도서
+            </a>
+        </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+              <a class="nav-link" href="/library/loan-history/">
+                  <i class="fas fa-history"></i> 대출 이력
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">
+                  <i class="fas fa-sign-out-alt"></i> 로그아웃
+              </a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">
+                  <i class="fas fa-sign-in-alt"></i> 로그인
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{% url 'signup' %}">
+                  <i class="fas fa-user-plus"></i> 회원가입
+              </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+    {% block content %}
+        <div class="welcome-section">
+            <div class="library-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h1>KMU 도서관 시스템에 오신 것을 환영합니다</h1>
+            <p class="lead">지식의 바다에서 원하는 정보를 찾아보세요. 최신 도서부터 고전까지, 모든 학습 자료가 여기에 있습니다.</p>
+        </div>
+        
+        <div class="quick-access">
+            <h3 class="text-center mb-4" style="color: #2c3e50; font-weight: 600;">
+                <i class="fas fa-rocket"></i> 빠른 접근
+            </h3>
+            <div class="text-center">
+                <a href="/library/search/" class="quick-access-btn">
+                    <i class="fas fa-search"></i> 도서 검색
+                </a>
+                <a href="/library/popular/" class="quick-access-btn">
+                    <i class="fas fa-star"></i> 인기 도서
+                </a>
+                {% if user.is_authenticated %}
+                <a href="/library/loan-history/" class="quick-access-btn">
+                    <i class="fas fa-history"></i> 나의 대출 이력
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endblock %}
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2024 KMU Library System. 모든 권리 보유.</p>
+        <p><i class="fas fa-phone"></i> 문의: library@kmu.ac.kr | <i class="fas fa-clock"></i> 운영시간: 평일 09:00-18:00</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

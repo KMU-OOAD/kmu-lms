@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .search-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .search-form {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .search-input {
+        border: 2px solid #e9ecef;
+        border-radius: 50px;
+        padding: 0.8rem 1.5rem;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .search-btn {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .filter-select {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 0.8rem 1rem;
+    }
+    
+    .book-card {
+        background: white;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        height: 100%;
+    }
+    
+    .book-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .book-card-header {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .book-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .book-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .book-title {
+        color: #2c3e50;
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        min-height: 3rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .book-author {
+        color: #7f8c8d;
+        margin-bottom: 1rem;
+        font-style: italic;
+    }
+    
+    .availability-badge {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .action-btn {
+        border-radius: 50px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .btn-borrow {
+        background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+        color: white;
+    }
+    
+    .btn-borrow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(86, 171, 47, 0.4);
+        color: white;
+    }
+    
+    .btn-reserve {
+        background: linear-gradient(45deg, #f093fb, #f5576c);
+        color: white;
+    }
+    
+    .btn-reserve:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+        color: white;
+    }
+    
+    .no-results {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .no-results i {
+        font-size: 4rem;
+        color: #bdc3c7;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="search-header">
+    <div class="container">
+        <h1><i class="fas fa-search"></i> 도서 검색</h1>
+        <p class="lead">원하는 도서를 빠르게 찾아보세요</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="search-form">
+        <form method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">검색어</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" name="q" class="form-control search-input border-start-0" 
+                               placeholder="도서명이나 저자명을 입력하세요" value="{{ query }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">검색 유형</label>
+                    <select name="type" class="form-select filter-select">
+                        <option value="title" {% if search_type == 'title' %}selected{% endif %}>
+                            <i class="fas fa-book"></i> 제목
+                        </option>
+                        <option value="author" {% if search_type == 'author' %}selected{% endif %}>
+                            <i class="fas fa-user"></i> 저자
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary search-btn w-100">
+                        <i class="fas fa-search"></i> 검색하기
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if books %}
+    <div class="row">
+        {% for book in books %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card book-card">
+                <div class="book-card-header">
+                    <div class="book-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="book-title">{{ book.title }}</h5>
+                    <p class="book-author">
+                        <i class="fas fa-user-edit"></i> {{ book.author }}
+                    </p>
+                    <div class="text-center">
+                        <span class="availability-badge {% if book.available %}bg-success{% else %}bg-warning{% endif %}">
+                            <i class="fas {% if book.available %}fa-check-circle{% else %}fa-clock{% endif %}"></i>
+                            {% if book.available %}대출 가능{% else %}대출 중{% endif %}
+                        </span>
+                    </div>
+                    <div class="d-grid">
+                        {% if book.available %}
+                            <a href="{% url 'borrow_book' book.id %}" class="btn btn-borrow action-btn">
+                                <i class="fas fa-book-reader"></i> 대출하기
+                            </a>
+                        {% else %}
+                            <a href="{% url 'reserve_book' book.id %}" class="btn btn-reserve action-btn">
+                                <i class="fas fa-bookmark"></i> 예약하기
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results">
+        <i class="fas fa-search"></i>
+        <h3 class="text-muted">
+            {% if query %}
+                "{{ query }}"에 대한 검색 결과가 없습니다
+            {% else %}
+                등록된 도서가 없습니다
+            {% endif %}
+        </h3>
+        <p class="text-muted">다른 검색어로 다시 시도해보세요.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

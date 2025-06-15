@@ -1,0 +1,29 @@
+<h1>🚫 연체 사용자 관리</h1>
+
+<ul>
+  {% for user in users %}
+    <li>
+      {{ user.username }} - 제재 종료일: 
+      {% if user.penalty_until %}
+        {{ user.penalty_until }}
+        <form action="{% url 'myadmin:release_penalty' user.id %}" method="post" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit">제재 해제</button>
+        </form>
+
+      {% else %}
+        (제재 필요)
+        <form action="{% url 'myadmin:impose_penalty' user.id %}" method="post" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit">제재</button>
+        </form>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+
+{% if error %}
+  <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<a href="{% url 'myadmin:admin_dashboard' %}">← 관리자 대쉬보드로</a>

@@ -1,0 +1,22 @@
+<h1>📚 도서 목록</h1>
+<a href="{% url 'myadmin:new_book' %}">신규 도서 등록</a>
+<ul>
+  {% for book in books %}
+    <li>
+      {{ book.title }} - {{ book.author }}
+      <form action="{% url 'myadmin:edit_book' book.bookID %}" method="get" style="display:inline;">
+        <button type="submit">수정</button>
+      </form>
+      <form action="{% url 'myadmin:delete_book' book.bookID %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">삭제</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+
+{% if error %}
+  <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<a href="{% url 'myadmin:admin_dashboard' %}">← 관리자 대쉬보드로</a>

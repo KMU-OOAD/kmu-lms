@@ -215,49 +215,28 @@
                 <div class="stat-icon total">
                     <i class="fas fa-books"></i>
                 </div>
-                <div class="stat-number">{{ loans|length }}</div>
+                <div class="stat-number">{{ total_loans }}</div>
                 <div class="stat-label">총 대출 수</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon active">
                     <i class="fas fa-book-reader"></i>
                 </div>
-                <div class="stat-number">
-                    {% with active_count=0 %}
-                        {% for loan in loans %}
-                            {% if not loan.return_date %}
-                                {% if active_count == 0 %}
-                                    {% with active_count=1 %}{% endwith %}
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                        {% for loan in loans %}
-                            {% if not loan.return_date %}1{% endif %}
-                        {% empty %}0{% endfor %}
-                    {% endwith %}
-                </div>
+                <div class="stat-number">{{ active_loans }}</div>
                 <div class="stat-label">대출 중</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon returned">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <div class="stat-number">
-                    {% for loan in loans %}
-                        {% if loan.return_date %}1{% endif %}
-                    {% empty %}0{% endfor %}
-                </div>
+                <div class="stat-number">{{ returned_loans }}</div>
                 <div class="stat-label">반납 완료</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon overdue">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
-                <div class="stat-number">
-                    {% for loan in loans %}
-                        {% if not loan.return_date and loan.due_date < date_today %}1{% endif %}
-                    {% empty %}0{% endfor %}
-                </div>
+                <div class="stat-number">{{ overdue_loans }}</div>
                 <div class="stat-label">연체</div>
             </div>
         </div>
